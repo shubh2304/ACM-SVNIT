@@ -5,7 +5,7 @@ import { ArrowLeft, Calendar, Clock } from "lucide-react";
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   return {
     title: `Blog — ${params.slug}`,
-    description: `Read this article from SVNIT ACM`,
+    description: `Read this article from ACM SVNIT`,
   };
 }
 

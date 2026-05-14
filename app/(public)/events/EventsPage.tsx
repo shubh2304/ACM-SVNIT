@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
-import { Calendar, MapPin, Users, ArrowRight, Filter, Tag } from "lucide-react";
+import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
+import { useRef } from "react";
+import { useCardSweep } from "@/components/animations/useCardSweep";
+import { useCardTilt } from "@/components/animations/useGlazeEffect";
 
 interface Event {
   _id: string;
@@ -84,13 +87,19 @@ const typeColors: Record<string, string> = {
 };
 
 function EventCard({ event }: { event: Event }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useCardTilt(ref);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="glass-card overflow-hidden group hover-lift"
+      ref={ref}
+      initial={{ opacity: 0, y: 100, rotateX: 45, rotateY: -30, scale: 0.8 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0, rotateY: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 60, damping: 20 }}
+      viewport={{ once: true, margin: "-100px" }}
+      className="glass-card overflow-hidden group glaze-card relative transform-gpu hover:shadow-[0_0_40px_rgba(0,212,255,0.3)] transition-shadow duration-500"
     >
+      <div className="glaze-shine" />
       {/* Cover image / gradient */}
       <div className="h-48 bg-gradient-to-br from-cyan-500/10 to-violet-500/10 relative overflow-hidden flex items-center justify-center">
         <div className="text-6xl opacity-20">
@@ -146,6 +155,11 @@ function EventCard({ event }: { event: Event }) {
 export default function EventsPage() {
   const [tab, setTab] = useState<"all" | "upcoming" | "past">("all");
   const [events, setEvents] = useState<Event[]>(mockEvents);
+
+  const wrapperRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  useCardSweep(containerRef, wrapperRef);
 
   useEffect(() => {
     fetch("/api/events")
@@ -214,7 +228,7 @@ export default function EventsPage() {
       </section>
 
       {/* Events Grid */}
-      <section className="py-16">
+      <section ref={wrapperRef} className="py-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           {filtered.length === 0 ? (
             <div className="text-center py-24 text-text-muted">
@@ -222,14 +236,94 @@ export default function EventsPage() {
               <p>No events found in this category.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div ref={containerRef} className="flex md:w-max gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-8 md:pb-0 hide-scrollbar">
               {filtered.map((event) => (
-                <EventCard key={event._id} event={event} />
+                <div key={event._id} className="w-[340px] md:w-[400px] flex-shrink-0 snap-start">
+                  <EventCard event={event} />
+                </div>
               ))}
             </div>
           )}
         </div>
       </section>
+      {/* Legacy Media Showcase */}
+      {tab === "all" || tab === "past" ? <LegacySection /> : null}
     </>
   );
+}
+
+function LegacySection() {
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  // Humongous text scaling
+  const textScale = useTransform(scrollYProgress, [0, 0.25], [1, 50]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.15, 0.25], [1, 1, 0]);
+
+  // Media window appearance
+  const windowOpacity = useTransform(scrollYProgress, [0.2, 0.3], [0, 1]);
+  const windowScale = useTransform(scrollYProgress, [0.2, 0.3], [0.8, 1]);
+
+  // Media horizontal scroll inside the window
+  const mediaX = useTransform(scrollYProgress, [0.35, 1], ["0%", "-66.666%"]);
+
+  return (
+    <section ref={containerRef} className="h-[400vh] relative bg-background mt-32">
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col items-center justify-center">
+        
+        {/* Humongous Text */}
+        <motion.h2 
+          style={{ scale: textScale, opacity: textOpacity }}
+          className="absolute inset-0 flex items-center justify-center font-syne font-black text-7xl md:text-[15rem] tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/10 z-10 origin-center pointer-events-none uppercase"
+        >
+          Legacy
+        </motion.h2>
+
+        {/* Past Events Media Window */}
+        <motion.div 
+          style={{ opacity: windowOpacity, scale: windowScale }}
+          className="relative w-[95vw] h-[60vh] md:w-[80vw] md:h-[75vh] bg-surface border border-white/10 rounded-3xl overflow-hidden shadow-2xl z-20 flex group"
+        >
+           <motion.div style={{ x: mediaX }} className="flex h-full w-[300%]">
+             
+             {/* Media Item 1 */}
+             <div className="w-1/3 h-full relative overflow-hidden">
+               <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2000" className="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity duration-700 group-hover:scale-105" alt="Event" />
+               <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 bg-gradient-to-t from-black via-black/40 to-transparent">
+                  <span className="text-cyan-500 font-mono text-sm mb-3 inline-flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" /> Playing
+                  </span>
+                  <h3 className="text-4xl md:text-6xl font-syne font-bold text-white mb-4">HackNIT 2023</h3>
+                  <p className="text-text-muted text-lg max-w-xl">A 24-hour hackathon that brought together over 500+ developers from across the country to build next-generation solutions.</p>
+               </div>
+             </div>
+
+             {/* Media Item 2 */}
+             <div className="w-1/3 h-full relative overflow-hidden">
+               <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2000" className="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity duration-700 group-hover:scale-105" alt="Event" />
+               <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 bg-gradient-to-t from-black via-black/40 to-transparent">
+                  <span className="text-cyan-500 font-mono text-sm mb-3">Recording</span>
+                  <h3 className="text-4xl md:text-6xl font-syne font-bold text-white mb-4">Open Source Summit</h3>
+                  <p className="text-text-muted text-lg max-w-xl">Global maintainers and student contributors uniting for a weekend of pure open-source development.</p>
+               </div>
+             </div>
+
+             {/* Media Item 3 */}
+             <div className="w-1/3 h-full relative overflow-hidden">
+               <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=2000" className="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity duration-700 group-hover:scale-105" alt="Event" />
+               <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16 bg-gradient-to-t from-black via-black/40 to-transparent">
+                  <span className="text-cyan-500 font-mono text-sm mb-3">Gallery</span>
+                  <h3 className="text-4xl md:text-6xl font-syne font-bold text-white mb-4">Winter of Code</h3>
+                  <p className="text-text-muted text-lg max-w-xl">Over 10,000 lines of code contributed. A testament to our community's passion for learning and building.</p>
+               </div>
+             </div>
+
+           </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  )
 }

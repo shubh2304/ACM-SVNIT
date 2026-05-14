@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail, Eye, EyeOff, ArrowRight } from "lucide-react";
@@ -35,11 +36,17 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-violet-500 items-center justify-center font-syne font-black text-lg text-white mb-4">
-            ACM
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/acm-logo.png"
+              alt="ACM SVNIT Logo"
+              width={56}
+              height={56}
+              className="w-14 h-14 object-contain"
+            />
           </div>
           <h1 className="font-syne font-black text-3xl text-text-primary mb-1">Admin Panel</h1>
-          <p className="text-text-muted text-sm">SVNIT ACM Student Chapter</p>
+          <p className="text-text-muted text-sm">ACM SVNIT Student Chapter</p>
         </div>
 
         <div className="glass-card p-8">

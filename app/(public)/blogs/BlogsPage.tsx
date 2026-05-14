@@ -113,7 +113,7 @@ export default function BlogsPage() {
             transition={{ delay: 0.3 }}
             className="text-text-muted text-xl max-w-xl mx-auto"
           >
-            Tutorials, event recaps, and tech insights from the SVNIT ACM community.
+            Tutorials, event recaps, and tech insights from the ACM SVNIT community.
           </motion.p>
         </div>
       </section>

@@ -22,14 +22,14 @@ export async function sendEventRegistrationConfirmation({
     await resend.emails.send({
       from: FROM_EMAIL,
       to,
-      subject: `Registration Confirmed: ${eventTitle} — SVNIT ACM`,
+      subject: `Registration Confirmed: ${eventTitle} — ACM SVNIT`,
       html: `
         <!DOCTYPE html>
         <html>
           <head><meta charset="utf-8"></head>
           <body style="background:#020408;color:#F0F4FF;font-family:'DM Sans',sans-serif;padding:40px 20px;max-width:600px;margin:0 auto;">
             <div style="text-align:center;margin-bottom:32px;">
-              <h1 style="color:#00D4FF;font-size:24px;font-weight:700;margin:0;">SVNIT ACM</h1>
+              <h1 style="color:#00D4FF;font-size:24px;font-weight:700;margin:0;">ACM SVNIT</h1>
               <p style="color:#6B7FA3;margin:8px 0 0;">Student Chapter</p>
             </div>
             <div style="background:#0D1117;border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:32px;">
@@ -42,7 +42,7 @@ export async function sendEventRegistrationConfirmation({
               </div>
               <p style="color:#9EB3CC;margin:0;">We'll send more details closer to the event. See you there!</p>
             </div>
-            <p style="text-align:center;color:#3D4F6E;font-size:12px;margin-top:24px;">SVNIT ACM Student Chapter · Surat, Gujarat</p>
+            <p style="text-align:center;color:#3D4F6E;font-size:12px;margin-top:24px;">ACM SVNIT Student Chapter · Surat, Gujarat</p>
           </body>
         </html>
       `,
@@ -90,15 +90,15 @@ export async function sendNewsletterConfirmation({ to }: { to: string }) {
     await resend.emails.send({
       from: FROM_EMAIL,
       to,
-      subject: "Welcome to SVNIT ACM Newsletter",
+      subject: "Welcome to ACM SVNIT Newsletter",
       html: `
         <div style="background:#020408;color:#F0F4FF;font-family:sans-serif;padding:40px 20px;max-width:600px;margin:0 auto;">
           <div style="text-align:center;margin-bottom:32px;">
-            <h1 style="color:#00D4FF;font-size:24px;font-weight:700;">SVNIT ACM</h1>
+            <h1 style="color:#00D4FF;font-size:24px;font-weight:700;">ACM SVNIT</h1>
           </div>
           <div style="background:#0D1117;border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:32px;text-align:center;">
             <h2 style="color:#F0F4FF;margin:0 0 16px;">You're subscribed! 🚀</h2>
-            <p style="color:#9EB3CC;margin:0;">You'll receive updates on events, workshops, and opportunities from SVNIT ACM Chapter.</p>
+            <p style="color:#9EB3CC;margin:0;">You'll receive updates on events, workshops, and opportunities from ACM SVNIT Chapter.</p>
           </div>
         </div>
       `,
@@ -119,12 +119,12 @@ export async function sendMembershipConfirmation({
     await resend.emails.send({
       from: FROM_EMAIL,
       to,
-      subject: "Membership Application Received — SVNIT ACM",
+      subject: "Membership Application Received — ACM SVNIT",
       html: `
         <div style="background:#020408;color:#F0F4FF;font-family:sans-serif;padding:40px 20px;max-width:600px;margin:0 auto;">
           <div style="background:#0D1117;border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:32px;">
             <h2 style="color:#00D4FF;margin:0 0 16px;">Application Received, ${name}!</h2>
-            <p style="color:#9EB3CC;margin:0 0 16px;">Thank you for applying to join SVNIT ACM. Our team will review your application and get back to you within 3-5 working days.</p>
+            <p style="color:#9EB3CC;margin:0 0 16px;">Thank you for applying to join ACM SVNIT. Our team will review your application and get back to you within 3-5 working days.</p>
             <p style="color:#9EB3CC;margin:0;">In the meantime, follow us on Instagram and LinkedIn for updates!</p>
           </div>
         </div>

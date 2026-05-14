@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Linkedin, Github, Crown, ChevronDown } from "lucide-react";
+import { Crown } from "lucide-react";
+import { FaLinkedin as Linkedin, FaGithub as Github } from "react-icons/fa";
 import Tilt from "react-parallax-tilt";
 
 interface TeamMember {

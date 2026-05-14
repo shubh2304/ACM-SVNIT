@@ -3,13 +3,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "SVNIT ACM Student Chapter — Where Engineers Become Innovators",
-    template: "%s | SVNIT ACM",
+    default: "ACM SVNIT Student Chapter — Where Engineers Become Innovators",
+    template: "%s | ACM SVNIT",
   },
   description:
     "SVNIT's premier computing society powered by ACM. Join us for hackathons, workshops, talks, and more. Build, learn, and grow with the best tech community at SVNIT Surat.",
   keywords: [
-    "SVNIT ACM",
+    "ACM SVNIT",
     "ACM Student Chapter",
     "SVNIT Surat",
     "Tech Club",
@@ -23,13 +23,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: "https://svnitacm.in",
-    siteName: "SVNIT ACM Student Chapter",
-    title: "SVNIT ACM Student Chapter",
+    siteName: "ACM SVNIT Student Chapter",
+    title: "ACM SVNIT Student Chapter",
     description: "SVNIT's premier computing society powered by ACM.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SVNIT ACM Student Chapter",
+    title: "ACM SVNIT Student Chapter",
     description: "SVNIT's premier computing society powered by ACM.",
   },
   robots: {

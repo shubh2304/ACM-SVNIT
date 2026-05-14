@@ -3,7 +3,7 @@ import AchievementsPage from "./AchievementsPage";
 
 export const metadata: Metadata = {
   title: "Achievements",
-  description: "Awards, recognitions, and competition victories earned by SVNIT ACM Student Chapter.",
+  description: "Awards, recognitions, and competition victories earned by ACM SVNIT Student Chapter.",
 };
 
 export default function Page() {

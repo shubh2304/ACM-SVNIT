@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Code2, Brain, Globe, Shield, Palette, Github as GitIcon, Users, Zap, Award } from "lucide-react";
+import { CheckCircle2, Code2, Brain, Globe, Shield, Palette, Users, Zap, Award } from "lucide-react";
+import { FaGithub as GitIcon } from "react-icons/fa";
 
 const benefits = [
   { icon: Users, title: "Network with 200+ Members", desc: "Connect with the brightest minds at SVNIT and beyond." },

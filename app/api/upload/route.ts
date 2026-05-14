@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
+
 import { uploadImage } from "@/lib/cloudinary";
 
 export async function POST(req: NextRequest) {

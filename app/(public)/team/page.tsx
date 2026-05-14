@@ -3,7 +3,7 @@ import TeamPage from "./TeamPage";
 
 export const metadata: Metadata = {
   title: "Team",
-  description: "Meet the SVNIT ACM team — past and present leaders, core members, and the people who make it all happen.",
+  description: "Meet the ACM SVNIT team — past and present leaders, core members, and the people who make it all happen.",
 };
 
 export default function Page() {

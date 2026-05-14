@@ -6,7 +6,8 @@ import AdminProviders from "./AdminProviders";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const headersList = headers();
-  const pathname = headersList.get("x-invoke-path") || "";
+  const pathname = headersList.get("x-pathname") || headersList.get("x-invoke-path") || "";
+  console.log("HEADERS:", Object.fromEntries(headersList.entries()));
   const isLoginPage = pathname.includes("/admin/login");
 
   if (isLoginPage) {

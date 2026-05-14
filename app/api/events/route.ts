@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const event = await Event.create(body);
     return NextResponse.json({ event }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to create event" }, { status: 500 });
   }
 }

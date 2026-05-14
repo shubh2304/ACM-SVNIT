@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Instagram, Linkedin, Github, Twitter, ChevronDown, Send } from "lucide-react";
+import { Mail, MapPin, ChevronDown, Send } from "lucide-react";
+import { FaInstagram as Instagram, FaLinkedin as Linkedin, FaGithub as Github, FaTwitter as Twitter } from "react-icons/fa";
 
 const faqs = [
-  { q: "How do I join SVNIT ACM?", a: "Visit our /join page and fill out the membership form. Our team reviews applications and we get back to you within 3-5 working days." },
+  { q: "How do I join ACM SVNIT?", a: "Visit our /join page and fill out the membership form. Our team reviews applications and we get back to you within 3-5 working days." },
   { q: "When are events held?", a: "We host events year-round — workshops during weekends, and major events like hackathons during semester breaks. Follow our Instagram for real-time updates." },
   { q: "Do I need to pay to join?", a: "There's a nominal annual membership fee that covers ACM global membership benefits. Details are on the Join page." },
   { q: "Can non-SVNIT students participate in events?", a: "Yes! Most of our events are open to all students. Some events may be SVNIT-exclusive — check individual event details." },
@@ -199,7 +200,7 @@ export default function ContactPage() {
             <div className="grid grid-cols-2 gap-3 mb-10">
               {[
                 { icon: Instagram, label: "Instagram", handle: "@svnitacm", href: "https://instagram.com/svnitacm", color: "text-pink-400" },
-                { icon: Linkedin, label: "LinkedIn", handle: "SVNIT ACM", href: "https://linkedin.com/company/svnitacm", color: "text-blue-400" },
+                { icon: Linkedin, label: "LinkedIn", handle: "ACM SVNIT", href: "https://linkedin.com/company/svnitacm", color: "text-blue-400" },
                 { icon: Github, label: "GitHub", handle: "svnitacm", href: "https://github.com/svnitacm", color: "text-text-primary" },
                 { icon: Twitter, label: "Twitter/X", handle: "@svnitacm", href: "https://twitter.com/svnitacm", color: "text-sky-400" },
               ].map(({ icon: Icon, label, handle, href, color }) => (

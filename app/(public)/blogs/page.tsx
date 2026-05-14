@@ -3,7 +3,7 @@ import BlogsPage from "./BlogsPage";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Insights, tutorials, event recaps, and tech articles from the SVNIT ACM community.",
+  description: "Insights, tutorials, event recaps, and tech articles from the ACM SVNIT community.",
 };
 
 export default function Page() {

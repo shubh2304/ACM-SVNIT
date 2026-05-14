@@ -15,10 +15,10 @@ interface Achievement {
 const mockAchievements: Achievement[] = [
   { _id: "1", title: "Best Chapter Award", description: "Recognized as the best ACM Student Chapter in India at the national summit.", year: 2024, category: "Award" },
   { _id: "2", title: "Outstanding Chapter Website", description: "Won the ACM India 'Outstanding Chapter Website' award.", year: 2023, category: "Award" },
-  { _id: "3", title: "ICPC Asia Regional Qualifier", description: "3 teams from SVNIT ACM qualified for the ICPC Asia Regional Contest.", year: 2023, category: "Competition" },
-  { _id: "4", title: "Smart India Hackathon Winner", description: "SVNIT ACM members won Smart India Hackathon 2022, recognized by MoE.", year: 2022, category: "Competition" },
+  { _id: "3", title: "ICPC Asia Regional Qualifier", description: "3 teams from ACM SVNIT qualified for the ICPC Asia Regional Contest.", year: 2023, category: "Competition" },
+  { _id: "4", title: "Smart India Hackathon Winner", description: "ACM SVNIT members won Smart India Hackathon 2022, recognized by MoE.", year: 2022, category: "Competition" },
   { _id: "5", title: "ACM India Distinguished Chapter", description: "Named as ACM India Distinguished Chapter for 2021-22.", year: 2022, category: "Recognition" },
-  { _id: "6", title: "CodeChef SnackDown Regional Champions", description: "SVNIT ACM team reached the final round of CodeChef SnackDown.", year: 2021, category: "Competition" },
+  { _id: "6", title: "CodeChef SnackDown Regional Champions", description: "ACM SVNIT team reached the final round of CodeChef SnackDown.", year: 2021, category: "Competition" },
   { _id: "7", title: "Codeforces Round Organizers", description: "Successfully organized an official Codeforces round with 3000+ participants.", year: 2020, category: "Recognition" },
   { _id: "8", title: "Top 10 ACM Chapters — ACM India", description: "Ranked in Top 10 ACM Student Chapters across India.", year: 2019, category: "Award" },
 ];

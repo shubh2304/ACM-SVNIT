@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
-  LayoutDashboard, Calendar, Users, FileText, Trophy, Image, Mail,
+  LayoutDashboard, Calendar, Users, FileText, Trophy, Image as ImageIcon, Mail,
   Settings, UserCog, LogOut, ChevronLeft, ChevronRight, Zap
 } from "lucide-react";
 
@@ -16,7 +17,7 @@ const navItems = [
   { href: "/admin/blogs", icon: FileText, label: "Blogs" },
   { href: "/admin/members", icon: UserCog, label: "Members" },
   { href: "/admin/achievements", icon: Trophy, label: "Achievements" },
-  { href: "/admin/gallery", icon: Image, label: "Gallery" },
+  { href: "/admin/gallery", icon: ImageIcon, label: "Gallery" },
   { href: "/admin/newsletter", icon: Mail, label: "Newsletter" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
   { href: "/admin/users", icon: Users, label: "Admin Users" },
@@ -30,12 +31,16 @@ export default function AdminSidebar() {
     <aside className={`admin-sidebar flex flex-col transition-all duration-300 ${collapsed ? "w-16" : "w-64"} min-h-screen flex-shrink-0`}>
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-cyan-500/8">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center font-syne font-black text-xs text-white flex-shrink-0">
-          ACM
-        </div>
+          <Image
+            src="/acm-logo.png"
+            alt="ACM SVNIT Logo"
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain shrink-0"
+          />
         {!collapsed && (
           <div>
-            <div className="font-syne font-bold text-sm text-text-primary">SVNIT ACM</div>
+            <div className="font-syne font-bold text-sm text-text-primary">ACM SVNIT</div>
             <div className="text-[10px] font-mono text-cyan-500">Admin Panel</div>
           </div>
         )}

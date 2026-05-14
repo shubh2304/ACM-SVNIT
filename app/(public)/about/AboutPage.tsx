@@ -5,13 +5,13 @@ import { useRef } from "react";
 import { Heart, Target, Eye, Award, Users, Globe } from "lucide-react";
 
 const timeline = [
-  { year: "2016", title: "Chapter Founded", desc: "SVNIT ACM Student Chapter was established as an ACM India certified chapter." },
+  { year: "2016", title: "Chapter Founded", desc: "ACM SVNIT Student Chapter was established as an ACM India certified chapter." },
   { year: "2017", title: "First Hackathon", desc: "Organized HackNIT, our flagship 24-hour hackathon with 200+ participants." },
   { year: "2018", title: "ICPC Debut", desc: "SVNIT teams qualified for ICPC Asia Regional Contest for the first time." },
   { year: "2019", title: "Workshop Series", desc: "Launched our annual 'CodeCraft' workshop series spanning 8 technical domains." },
   { year: "2020", title: "Going Virtual", desc: "Pivoted to online events during pandemic — reached 500+ participants nationwide." },
-  { year: "2021", title: "Open Source Initiative", desc: "Launched SVNIT ACM Open Source Program, contributing to 15+ global projects." },
-  { year: "2022", title: "SIH Winners", desc: "SVNIT ACM members won Smart India Hackathon, recognized by MoE." },
+  { year: "2021", title: "Open Source Initiative", desc: "Launched ACM SVNIT Open Source Program, contributing to 15+ global projects." },
+  { year: "2022", title: "SIH Winners", desc: "ACM SVNIT members won Smart India Hackathon, recognized by MoE." },
   { year: "2023", title: "Best Chapter Award", desc: "Received ACM India 'Outstanding Chapter' award at the national summit." },
   { year: "2024", title: "200+ Members", desc: "Crossed 200 active members milestone — the largest chapter at SVNIT." },
 ];
@@ -36,7 +36,7 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             className="section-tag inline-flex mb-6"
           >
-            About SVNIT ACM
+            About ACM SVNIT
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}

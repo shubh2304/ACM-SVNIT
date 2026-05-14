@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Link2, AtSign, Globe, X as TwitterX, Mail, MapPin, ExternalLink } from "lucide-react";
 const Github = Link2;
 const Instagram = AtSign;
@@ -9,16 +10,15 @@ const Twitter = TwitterX;
 
 const footerLinks = {
   Pages: [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Events", href: "/events" },
-    { label: "Team", href: "/team" },
+    { label: "Home", href: "/#home" },
+    { label: "About", href: "/#about" },
+    { label: "Events", href: "/#events" },
+    { label: "Team", href: "/#team" },
   ],
   Resources: [
-    { label: "Blog", href: "/blogs" },
-    { label: "Achievements", href: "/achievements" },
-    { label: "Join Us", href: "/join" },
-    { label: "Contact", href: "/contact" },
+    { label: "Blog", href: "/#blogs" },
+    { label: "Achievements", href: "/#achievements" },
+    { label: "Contact", href: "/#contact" },
   ],
 };
 
@@ -43,18 +43,22 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center font-syne font-black text-sm text-white">
-                ACM
-              </div>
+              <Image
+                src="/acm-logo.png"
+                alt="ACM SVNIT Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10 object-contain"
+              />
               <div>
                 <div className="font-syne font-bold text-xl text-text-primary">
-                  SVNIT <span className="gradient-text">ACM</span>
+                  <span className="gradient-text">ACM</span> SVNIT
                 </div>
                 <div className="text-text-muted text-xs font-mono">Student Chapter</div>
               </div>
             </div>
             <p className="text-text-muted text-sm leading-relaxed max-w-xs mb-6">
-              SVNIT&apos;s premier computing society — powered by ACM. Where engineers 
+              ACM SVNIT&apos;s premier computing society. Where engineers 
               become innovators through code, collaboration, and community.
             </p>
             <div className="flex items-center gap-2 text-text-muted text-sm mb-2">
@@ -110,7 +114,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-cyan-500/8 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-text-subtle text-sm font-mono">
-            Built with ❤️ by SVNIT ACM · © {new Date().getFullYear()}
+            Built with ❤️ by ACM SVNIT · © {new Date().getFullYear()}
           </p>
           <div className="flex items-center gap-4">
             <a

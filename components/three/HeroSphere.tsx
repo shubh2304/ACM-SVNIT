@@ -1,12 +1,11 @@
 "use client";
 
-import { useRef, useMemo, Suspense } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Sphere } from "@react-three/drei";
+import { useRef, useMemo, Suspense, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Html, Line } from "@react-three/drei";
 import * as THREE from "three";
 
 function ParticleSphere() {
-  const pointsRef = useRef<THREE.Points>(null);
   const count = 2000;
 
   const positions = useMemo(() => {
@@ -38,15 +37,8 @@ function ParticleSphere() {
     return cols;
   }, []);
 
-  useFrame((state) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y += 0.002;
-      pointsRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
-    }
-  });
-
   return (
-    <points ref={pointsRef}>
+    <points>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -65,6 +57,43 @@ function ParticleSphere() {
         sizeAttenuation
       />
     </points>
+  );
+}
+
+function Node({ position, label }: { position: THREE.Vector3, label: string }) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      const scale = hovered ? 1.5 : 1 + Math.sin(state.clock.elapsedTime * 3 + position.x) * 0.2;
+      meshRef.current.scale.setScalar(scale);
+    }
+  });
+
+  return (
+    <mesh
+      ref={meshRef}
+      position={position}
+      onPointerOver={() => {
+        setHovered(true);
+        document.body.style.cursor = 'pointer';
+      }}
+      onPointerOut={() => {
+        setHovered(false);
+        document.body.style.cursor = 'auto';
+      }}
+    >
+      <sphereGeometry args={[0.08, 16, 16]} />
+      <meshBasicMaterial color={hovered ? "#ffffff" : "#00D4FF"} transparent opacity={0.9} />
+      {hovered && (
+        <Html distanceFactor={10} position={[0, 0.15, 0]} center zIndexRange={[100, 0]}>
+          <div className="px-3 py-1.5 bg-[rgba(2,4,8,0.9)] border border-cyan-500/50 text-cyan-400 text-xs font-mono rounded backdrop-blur-md whitespace-nowrap pointer-events-none shadow-[0_0_15px_rgba(0,212,255,0.2)]">
+            {label}
+          </div>
+        </Html>
+      )}
+    </mesh>
   );
 }
 
@@ -88,22 +117,50 @@ function GlowingNodes() {
     }));
   }, []);
 
+  const lines = useMemo(() => {
+    const pts = nodes.map(n => n.position);
+    pts.push(pts[0]); // close loop
+    return pts;
+  }, [nodes]);
+
+  return (
+    <group>
+      <Line points={lines} color="#7B2FFF" lineWidth={1.5} transparent opacity={0.4} />
+      <Line points={[nodes[0].position, nodes[2].position]} color="#00D4FF" lineWidth={0.8} transparent opacity={0.2} />
+      <Line points={[nodes[1].position, nodes[3].position]} color="#00D4FF" lineWidth={0.8} transparent opacity={0.2} />
+      <Line points={[nodes[2].position, nodes[4].position]} color="#00D4FF" lineWidth={0.8} transparent opacity={0.2} />
+
+      {nodes.map((node, i) => (
+        <Node key={i} position={node.position} label={node.label} />
+      ))}
+    </group>
+  );
+}
+
+function Scene() {
   const groupRef = useRef<THREE.Group>(null);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += 0.002;
+      // Auto rotation
+      groupRef.current.rotation.y += 0.0015;
+      
+      // Gentle bobbing
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1;
+
+      // Mouse tracking parallax (subtle)
+      const targetX = state.pointer.x * 0.3;
+      const targetY = state.pointer.y * 0.3;
+
+      groupRef.current.rotation.y += (targetX - groupRef.current.rotation.y) * 0.05;
+      groupRef.current.rotation.x += (-targetY - groupRef.current.rotation.x) * 0.05;
     }
   });
 
   return (
     <group ref={groupRef}>
-      {nodes.map((node, i) => (
-        <mesh key={i} position={node.position}>
-          <sphereGeometry args={[0.06, 8, 8]} />
-          <meshBasicMaterial color="#00D4FF" transparent opacity={0.9} />
-        </mesh>
-      ))}
+      <ParticleSphere />
+      <GlowingNodes />
     </group>
   );
 }
@@ -118,8 +175,7 @@ export default function HeroSphere() {
       >
         <ambientLight intensity={0.5} />
         <Suspense fallback={null}>
-          <ParticleSphere />
-          <GlowingNodes />
+          <Scene />
         </Suspense>
         <OrbitControls
           enableZoom={false}

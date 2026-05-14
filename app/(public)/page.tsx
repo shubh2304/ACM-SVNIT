@@ -1,17 +1,31 @@
 "use client";
 
-import { useRef, useEffect, Suspense, lazy } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef, useEffect, Suspense, useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ChevronDown, Award, Users, Calendar, Code2, Brain, Globe, Shield, Palette, Github, Zap, Trophy, Mail, Star } from "lucide-react";
+import { ArrowRight, ChevronDown, Award, Users, Calendar, Code2, Brain, Globe, Shield, Palette, GitBranch, Zap, Trophy, Mail, Star } from "lucide-react";
 import CounterAnimation from "@/components/animations/CounterAnimation";
 import MagneticButton from "@/components/ui/MagneticButton";
+import { useGlazeEffect, useCardTilt } from "@/components/animations/useGlazeEffect";
+import { useCardSweep } from "@/components/animations/useCardSweep";
+import { WordReveal } from "@/components/animations/WordReveal";
+import { Marquee } from "@/components/ui/Marquee";
+import AboutPage from "./about/AboutPage";
+import EventsPage from "./events/EventsPage";
+import TeamPage from "./team/TeamPage";
+import BlogsPage from "./blogs/BlogsPage";
+import AchievementsPage from "./achievements/AchievementsPage";
+import ContactPage from "./contact/ContactPage";
 
-// Lazy load Three.js sphere
-const HeroSphere = lazy(() => import("@/components/three/HeroSphere"));
+import dynamic from "next/dynamic";
 
-const domains = [
+// Lazy load Three.js sphere with SSR disabled
+const HeroSphere = dynamic(() => import("@/components/three/HeroSphere"), {
+  ssr: false,
+});
+
+const defaultDomains = [
   {
     icon: Code2,
     title: "Competitive Programming",
@@ -41,7 +55,7 @@ const domains = [
     glow: "rgba(239,68,68,0.15)",
   },
   {
-    icon: Github,
+    icon: GitBranch,
     title: "Open Source",
     description: "Contribute to global projects. Build your public profile.",
     color: "from-amber-500 to-yellow-400",
@@ -65,11 +79,12 @@ const achievements = [
 
 function HeroSection() {
   const ref = useRef<HTMLDivElement>(null);
+  useGlazeEffect(ref);
 
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay grid-bg"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden noise-overlay grid-bg hero-glaze"
     >
       {/* Background glows */}
       <div className="absolute inset-0 pointer-events-none">
@@ -126,17 +141,10 @@ function HeroSection() {
           >
             <MagneticButton
               as="a"
-              href="/events"
+              href="#events"
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-cyan-500 to-violet-500 text-white font-semibold rounded-xl hover:opacity-90 transition-all hover:shadow-lg hover:shadow-cyan-500/20 text-sm"
             >
               Explore Events <ArrowRight size={16} />
-            </MagneticButton>
-            <MagneticButton
-              as="a"
-              href="/join"
-              className="inline-flex items-center gap-2 px-7 py-3.5 bg-transparent border border-cyan-500/30 text-text-primary font-semibold rounded-xl hover:border-cyan-500/60 hover:bg-cyan-500/5 transition-all text-sm"
-            >
-              Join the Chapter
             </MagneticButton>
           </motion.div>
 
@@ -214,30 +222,57 @@ function StatsSection() {
           <CounterAnimation end={10} suffix="+" label="SIG Groups" />
         </div>
 
-        {/* Ticker */}
-        <div className="mt-16 ticker-wrapper">
-          <div className="ticker-inner gap-12">
-            {[...Array(2)].map((_, i) =>
-              ["ACM", "SVNIT", "IEEE", "IIT Bombay", "IIT Delhi", "NIT Trichy", "VIT", "BITS Pilani", "IIIT Hyderabad"].map((org) => (
-                <span key={`${i}-${org}`} className="inline-flex items-center gap-3 mr-12">
-                  <span className="text-cyan-500/40 text-xs font-mono">◆</span>
-                  <span className="text-text-subtle text-sm font-medium whitespace-nowrap">{org}</span>
-                </span>
-              ))
-            )}
-          </div>
+        <div className="mt-16 -mx-6 md:-mx-8 overflow-hidden">
+          <Marquee 
+            items={["ACM SVNIT", "COMPUTING", "INNOVATION", "COMMUNITY", "TECHNOLOGY"]} 
+            speed={30} 
+            direction="left" 
+          />
         </div>
       </div>
     </section>
   );
 }
 
-function DomainsSection() {
+function DomainCard({ domain, i, isInView }: { domain: Record<string, unknown>, i: number, isInView: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  useCardTilt(ref);
 
   return (
-    <section ref={ref} className="relative py-32 overflow-hidden">
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: 0.1 * i, duration: 0.6 }}
+      className="glass-card p-6 group hover-lift cursor-pointer glaze-card relative"
+    >
+      <div className="glaze-shine" />
+      <div
+        className={`inline-flex w-12 h-12 rounded-xl bg-gradient-to-br ${domain.color} p-0.5 mb-5`}
+      >
+        <div className="w-full h-full rounded-[10px] bg-background flex items-center justify-center">
+          <domain.icon size={22} className={`bg-gradient-to-br ${domain.color} bg-clip-text`} style={{ color: "transparent", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }} />
+        </div>
+      </div>
+      <h3 className="font-syne font-bold text-lg text-text-primary mb-2 group-hover:text-cyan-400 transition-colors">
+        {domain.title}
+      </h3>
+      <p className="text-text-muted text-sm leading-relaxed">
+        {domain.description}
+      </p>
+    </motion.div>
+  );
+}
+
+function DomainsSection() {
+  const wrapperRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(wrapperRef, { once: true, margin: "-100px" });
+  
+  useCardSweep(containerRef, wrapperRef);
+
+  return (
+    <section ref={wrapperRef} className="relative py-32 overflow-hidden bg-surface">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-violet-500/5 rounded-full blur-[150px]" />
       </div>
@@ -252,15 +287,10 @@ function DomainsSection() {
           >
             What We Do
           </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            className="font-syne font-black text-4xl md:text-5xl mt-6 mb-4 text-text-primary"
-          >
-            Six Domains.{" "}
-            <span className="gradient-text">One Community.</span>
-          </motion.h2>
+          <WordReveal 
+            text="Six Domains. One Community." 
+            className="font-syne font-black text-4xl md:text-5xl mt-6 mb-4 text-text-primary justify-center" 
+          />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -272,29 +302,11 @@ function DomainsSection() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {domains.map((domain, i) => (
-            <motion.div
-              key={domain.title}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.1 * i, duration: 0.6 }}
-              className="glass-card p-6 group hover-lift cursor-pointer"
-            >
-              <div
-                className={`inline-flex w-12 h-12 rounded-xl bg-gradient-to-br ${domain.color} p-0.5 mb-5`}
-              >
-                <div className="w-full h-full rounded-[10px] bg-background flex items-center justify-center">
-                  <domain.icon size={22} className={`bg-gradient-to-br ${domain.color} bg-clip-text`} style={{ color: "transparent", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }} />
-                </div>
-              </div>
-              <h3 className="font-syne font-bold text-lg text-text-primary mb-2 group-hover:text-cyan-400 transition-colors">
-                {domain.title}
-              </h3>
-              <p className="text-text-muted text-sm leading-relaxed">
-                {domain.description}
-              </p>
-            </motion.div>
+        <div ref={containerRef} className="flex md:w-max gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-8 md:pb-0 hide-scrollbar mt-12 pl-6 md:pl-[15%]">
+          {defaultDomains.map((domain, i) => (
+            <div key={domain.title} className="w-[320px] md:w-[400px] flex-shrink-0 snap-start">
+              <DomainCard domain={domain as Record<string, unknown>} i={i} isInView={isInView} />
+            </div>
           ))}
         </div>
       </div>
@@ -305,24 +317,32 @@ function DomainsSection() {
 function AboutTeaser() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+
+  const textY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const imagesY = useTransform(scrollYProgress, [0, 1], [150, -150]);
 
   return (
     <section ref={ref} className="relative py-32 overflow-hidden bg-surface">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
+            style={{ y: textY }}
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
             <span className="section-tag mb-6 inline-flex">About Us</span>
-            <h2 className="font-syne font-black text-4xl md:text-5xl leading-tight text-text-primary mb-6">
-              More Than a Club.{" "}
-              <br />
-              <span className="gradient-text">A Movement.</span>
-            </h2>
+            <WordReveal 
+              text="More Than a Club. A Movement." 
+              className="font-syne font-black text-4xl md:text-5xl leading-tight text-text-primary mb-6" 
+            />
             <p className="text-text-muted text-lg leading-relaxed mb-4">
-              Founded in 2016, SVNIT ACM Student Chapter is the largest and most active 
+              Founded in 2016, ACM SVNIT Student Chapter is the largest and most active 
               tech community at Sardar Vallabhbhai National Institute of Technology, Surat.
             </p>
             <p className="text-text-muted text-base leading-relaxed mb-8">
@@ -340,6 +360,7 @@ function AboutTeaser() {
           </motion.div>
 
           <motion.div
+            style={{ y: imagesY }}
             initial={{ opacity: 0, x: 40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -372,38 +393,67 @@ function AboutTeaser() {
   );
 }
 
+function AchievementCard({ ach, i, isInView }: { ach: Record<string, unknown>, i: number, isInView: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useCardTilt(ref);
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: i * 0.1, duration: 0.6 }}
+      className="glass-card p-8 md:p-12 hover-lift glaze-card relative flex flex-col md:flex-row items-center md:items-start gap-8 bg-[rgba(13,17,23,0.85)]"
+    >
+      <div className="glaze-shine" />
+      <div className="inline-flex w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 items-center justify-center">
+        <ach.icon size={36} className="text-cyan-500" />
+      </div>
+      <div className="text-center md:text-left">
+        <div className="font-mono text-sm text-cyan-500 mb-3">{ach.year}</div>
+        <h3 className="font-syne font-black text-2xl md:text-3xl text-text-primary mb-3">
+          {ach.title}
+        </h3>
+        <p className="text-text-muted text-base">{ach.org}</p>
+      </div>
+    </motion.div>
+  );
+}
+
 function AchievementsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const [dbAchievements, setDbAchievements] = useState<any[]>(achievements);
+
+  useEffect(() => {
+    fetch("/api/achievements")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.achievements && data.achievements.length > 0) setDbAchievements(data.achievements);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section ref={ref} className="relative py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="section-tag">Recognition</span>
-          <h2 className="font-syne font-black text-4xl md:text-5xl mt-6 mb-4 text-text-primary">
-            Built to <span className="gradient-text">Win.</span>
-          </h2>
+          <WordReveal 
+            text="Built to Win." 
+            className="font-syne font-black text-4xl md:text-5xl mt-6 mb-4 text-text-primary justify-center" 
+          />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {achievements.map((ach, i) => (
-            <motion.div
-              key={ach.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="glass-card p-6 text-center hover-lift"
+        <div className="flex flex-col gap-6 max-w-4xl mx-auto mt-20 relative z-10 pb-20">
+          {dbAchievements.map((ach, i) => (
+            <div 
+              key={ach.title} 
+              className="sticky transition-all duration-500 shadow-2xl origin-top"
+              style={{ top: `calc(100px + ${i * 24}px)`, zIndex: i }}
             >
-              <div className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 items-center justify-center mb-4">
-                <ach.icon size={24} className="text-cyan-500" />
-              </div>
-              <div className="font-mono text-xs text-cyan-500 mb-2">{ach.year}</div>
-              <h3 className="font-syne font-bold text-base text-text-primary mb-1">
-                {ach.title}
-              </h3>
-              <p className="text-text-muted text-xs">{ach.org}</p>
-            </motion.div>
+              <AchievementCard ach={{ ...ach, icon: achievements.find(a => a.title === ach.title)?.icon || Trophy }} i={i} isInView={isInView} />
+            </div>
           ))}
         </div>
 
@@ -477,7 +527,7 @@ function NewsletterSection() {
   );
 }
 
-export default function HomePage() {
+function HomeContent() {
   return (
     <>
       <HeroSection />
@@ -487,5 +537,19 @@ export default function HomePage() {
       <AchievementsSection />
       <NewsletterSection />
     </>
+  );
+}
+
+export default function SinglePageApp() {
+  return (
+    <div className="flex flex-col">
+      <div id="home"><HomeContent /></div>
+      <div id="about"><AboutPage /></div>
+      <div id="events"><EventsPage /></div>
+      <div id="team"><TeamPage /></div>
+      <div id="blogs"><BlogsPage /></div>
+      <div id="achievements"><AchievementsPage /></div>
+      <div id="contact"><ContactPage /></div>
+    </div>
   );
 }

@@ -20,6 +20,10 @@ export default function AnimatedCursor() {
     const onMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
       dot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+      
+      // Global CSS variables for background hover effects
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
 
     const onMouseEnterHoverable = () => ring?.classList.add("hovering");
